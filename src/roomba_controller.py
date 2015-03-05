@@ -31,7 +31,7 @@ def controlled_move(robot, host, port):
 	print('Connected to remote host. Start sending messages')
 
 	while running:
-        socket_list = [sys.stdin, s]
+		socket_list = [sys.stdin, s]
          
         # Get the list sockets which are readable
         read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])

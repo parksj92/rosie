@@ -19,56 +19,44 @@ def controlled_move(robot, host, port):
 	DEFAULT_ANGULAR_VELOCITY = 5
 	DEFAULT_LINEAR_VELOCITY = 15
 	running = True
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.settimeout(2) 
+    # connect to remote host
+	try :
+		s.connect((host, port))
+	except :
+		print('Unable to connect')
+		sys.exit()
+     
+	print('Connected to remote host. Start sending messages')
 
 	while running:
-		time.sleep(2)
-		# receive command from ROS Publisher via socket
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.connect((host, port))
-		data = s.recv(1024) # socket sends binary string
-		data = data.decode() # need to convert to python strings
-		# parse the data
-		# assumes data is of the form: Distance: %d Degree: %d
-		movement_command = str(data)
-		movement_command_array = movement_command.split(" ")
-		for command in movement_command_array:
-			print(command)
-
-'''
-		# if only direction given, stop the robot
-		if len(movement_command_array) == 1:
-			robot.stop()
-
-			single_command = movement_command_array[0]
-			print(single_command)
-			if single_command == "quit":
-				robot.shutdown()
-				running = False
-
-
-		else:
-			print("Now moving!")
-			direction = movement_command_array[0]
-			degree = int(movement_command_array[1])
-
-			# directions corresponding to degrees
-			# setup with notion forward is 0 degree
-			direction_map = {'forward': 0, 'left': 90, 'right': -90, 'backward':180}
-
-			# find the total angle
-			total_degree = direction_map[direction] + degree
-
-			# have the robot move in that direction
-			# turn first
-			print(total_degree)
-			print(direction)
-			print(degree)
-			robot.go(0, DEFAULT_ANGULAR_VELOCITY)
-			robot.waitAngle(total_degree)
-
-			# then move forward in that direction
-			robot.go(DEFAULT_LINEAR_VELOCITY, 0)
-'''
+        socket_list = [sys.stdin, s]
+         
+        # Get the list sockets which are readable
+        read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+         
+        for sock in read_sockets:
+            #incoming message from remote server
+            if sock == s:
+                data = sock.recv(4096)
+                data = data.decode() # convert to python 3 strings (Unicode)
+                if not data :
+                    print('\nDisconnected from server')
+                    sys.exit()
+                else :
+                    #print data
+                    # handle the data here
+                    movement_command = str(data)
+					movement_command_array = movement_command.split(" ")
+					for command in movement_command_array:
+						sys.stdout.write(command)
+             
+            #user entered a message
+            else :
+                msg = sys.stdin.readline()
+                s.send(msg)
+                prompt()
 
 if __name__ == "__main__":
 	if (len(sys.argv) != 2):

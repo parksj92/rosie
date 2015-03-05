@@ -45,16 +45,18 @@ if __name__ == "__main__":
                 # Handle the case in which there is a new connection recieved through server_socket
                 sockfd, addr = server_socket.accept()
                 CONNECTION_LIST.append(sockfd)
-                print ("Client (%s, %s) connected" % addr)
+                print "Client (%s, %s) connected" % addr
 
+                '''
                 # send some test data to the accepted socket
                 message_data = input("Type something!")
                 # for python 3, convert to binary
                 message = bytes(message_data, 'UTF-8')
-                print(message)
+                print message
                 sockfd.send(message)
+                '''
                     
-                #broadcast_data(sockfd, "[%s:%s] entered room\n" % addr)
+                broadcast_data(sockfd, "[%s:%s] entered room\n" % addr)
              
             #Some incoming message from a client
             else:
@@ -67,7 +69,7 @@ if __name__ == "__main__":
                         print("hi")
                         # here should put function to do ROS publisher actions
 
-                        #broadcast_data(sock, "\r" + '<' + str(sock.getpeername()) + '> ' + data)                
+                        broadcast_data(sock, "\r" + '<' + str(sock.getpeername()) + '> ' + data)                
                  
                 except:
                     # broadcast_data(sock, "Client (%s, %s) is offline" % addr)

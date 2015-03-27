@@ -13,7 +13,7 @@ except :
 print("connected to command server")
 
 odometry_host = command_host
-odometry_port = command_port
+odometry_port = 8000
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.settimeout(2) 
 try :
@@ -21,5 +21,4 @@ try :
 except :
 	print('Unable to connect')
 	sys.exit()
-
 print("connected to odometry publisher")

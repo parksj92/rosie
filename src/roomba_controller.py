@@ -18,11 +18,11 @@ def controlled_move(robot, host, port):
 
 	# function to move the robot through continuous input
 	# default behavior is the robot moves until new command is given (default behavior of roomba)
-	DEFAULT_ANGULAR_VELOCITY = 5
-	DEFAULT_LINEAR_VELOCITY = 15
+	MAX_ANGULAR_VELOCITY = 10
+	MAX_LINEAR_VELOCITY = 10
 	running = True
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.settimeout(2) 
+	s.settimeout(5) 
 	# connect to remote host
 	try :
 		s.connect((host, port))
@@ -30,7 +30,7 @@ def controlled_move(robot, host, port):
 		print('Unable to connect')
 		sys.exit()
 
-	print('Connected to remote host. Start sending messages')
+	print('Connected to command host. Start sending messages')
 	while running:
 		socket_list = [s]
  
@@ -43,7 +43,7 @@ def controlled_move(robot, host, port):
 				data = sock.recv(4096)
 				data = data.decode() # convert to python 3 strings (Unicode)
 				if not data :
-					print('\nDisconnected from server')
+					print('\nDisconnected from command server')
 					sys.exit()
 				else :
 					#print data
@@ -64,6 +64,12 @@ def controlled_move(robot, host, port):
 
 					linear = float(m[0])
 					angular = float(m[5])
+
+					if linear > MAX_LINEAR_VELOCITY: linear = MAX_LINEAR_VELOCITY
+					if angular > MAX_ANGULAR_VELOCITY: angular = MAX_ANGULAR_VELOCITY
+
+					if linear < -MAX_LINEAR_VELOCITY: linear = -MAX_LINEAR_VELOCITY
+					if angular < -MAX_ANGULAR_VELOCITY: angular = -MAX_ANGULAR_VELOCITY
 
 					sys.stdout.write("regex here\n")
 					'''
@@ -98,7 +104,7 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 	PERIOD = 0.2
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.settimeout(2) 
+	s.settimeout(5) 
 	# connect to remote host
 	try :
 		s.connect((odometry_server_name, odometry_server_port))
@@ -106,20 +112,24 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 		print('Unable to connect')
 		sys.exit()
 	running = True
-	print('Connected to remote host. Start sending messages')
-	while running:
-			
+	print('Connected to odometry host. Start sending messages')
+	try:
+		while running:	
 			distance = robot.getSensor("DISTANCE")
 			angle = robot.getSensor("ANGLE")
 			
 			#distance = 10
 			#angle = 10
-			msg = str(distance) + " " + str(angle)
-
+			msg = str(distance) + ";" + str(angle)
+			print(distance)
+			print(angle)
 			msg = bytes(msg, 'UTF-8')
-			print("sending odometry to create")
+			print("sending create odometry to ROS node")
 			s.send(msg)
 			time.sleep(PERIOD)
+	except :
+		print("odometry publisher crashed")
+		sys.exit()
 
 
 if __name__ == "__main__":
@@ -132,16 +142,20 @@ if __name__ == "__main__":
 	host = sys.argv[2]
 	port = sys.argv[3]
 	'''
-	command_host = "160.39.240.203"	# hostname for component that gives commands
+	command_host = "160.39.241.180"	# hostname for component that gives commands
 	command_port = 8001             # same port as used by the server
 
 #	r = "hi"
 	r = create.Create(serPort)
 
+	distance = r.getSensor("DISTANCE")
+	angle = r.getSensor("ANGLE")
+
+
 	# python multiprocessing
 	# wrap the robot with Value for shared memory
 
-	odometry_host = "160.39.240.203"
+	odometry_host = command_host
 	odometry_port = 8000
 	
 	#send_odometry(r, odometry_host, odometry_port)

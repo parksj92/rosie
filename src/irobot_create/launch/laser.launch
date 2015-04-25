@@ -1,0 +1,9 @@
+<launch>
+        <!-- launch openni -->
+        <include file="$(find openni_launch)/launch/openni.launch"/>
+
+                <!-- launch depthimage to laserscan -->
+        <include file="$(find depthimage_to_laserscan)/launch/laserscan.launch" />
+
+
+</launch>

@@ -1,0 +1,5 @@
+<launch>
+    <node name="movement_msg_server" pkg="irobot_create" type="movement_msg_server.py" />
+    <node name="odom_publisher" pkg="irobot_create" type="roomba_odom_publisher.py" />
+    <!--<node name="ros_listener" pkg="irobot_create" type="ros_listener.py" />-->
+</launch>

@@ -1,0 +1,57 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1343608422/fast"
+make[1]: Entering directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1343608422.dir/build.make CMakeFiles/cmTryCompileExec1343608422.dir/build
+make[2]: Entering directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1343608422.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec1343608422.dir/CheckSymbolExists.c.o   -c /home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec1343608422
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1343608422.dir/link.txt --verbose=1
+/usr/bin/cc         CMakeFiles/cmTryCompileExec1343608422.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1343608422 -rdynamic 
+CMakeFiles/cmTryCompileExec1343608422.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make[2]: *** [cmTryCompileExec1343608422] Error 1
+make[2]: Leaving directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec1343608422/fast] Error 2
+
+File /home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec861157355/fast"
+make[1]: Entering directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec861157355.dir/build.make CMakeFiles/cmTryCompileExec861157355.dir/build
+make[2]: Entering directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec861157355.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec861157355.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec861157355
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec861157355.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec861157355.dir/CheckFunctionExists.c.o  -o cmTryCompileExec861157355 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[2]: *** [cmTryCompileExec861157355] Error 1
+make[2]: Leaving directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec861157355/fast] Error 2
+make[1]: Leaving directory `/home/rbtying/humanoids/src/brown_drivers/irobot_create_2_1/build/CMakeFiles/CMakeTmp'
+
+

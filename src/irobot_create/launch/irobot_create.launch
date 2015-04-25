@@ -1,0 +1,16 @@
+<launch>
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_bcaster" args="0 0 0 0 0 0 1 base_link camera_link 33" />
+
+    <node name="movement_message_server" pkg="irobot_create" type="movement_message_server.py" />
+
+    <node name="odom_publisher" pkg="irobot_create" type="roomba_odom_publisher.py" output="screen" />
+    <node name="ros_listener" pkg="irobot_create" type="ros_listener.py" />
+
+    <!--<node name="imu" pkg="imu" type="imu.py" output="screen" />-->
+
+    <!--<node name="gmapping" pkg="gmapping" type="slam_gmapping" />-->
+    <node name="rviz" pkg="rviz" type="rviz" />
+    <!--<include file="$(find irobot_create)/launch/lasers.launch" />-->
+    <!--<node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop" output="screen"/>-->
+    
+</launch>

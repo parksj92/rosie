@@ -1,0 +1,5 @@
+<launch>
+    <node name="sim_roomba_odom" pkg="simulation" type="sim_roomba_odom.py" />
+    <node name="imu" pkg="imu" type="imu.py" output="screen"/>
+    <!--<node name="sim_roomba_imu" pkg="simulation" type="sim_imu.py" />-->
+</launch>

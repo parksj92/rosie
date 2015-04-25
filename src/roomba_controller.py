@@ -1,5 +1,5 @@
 import os, sys, inspect, socket, time, select, math
-import re
+import re, math
 from threading import Thread
 
 # add path for create library
@@ -17,6 +17,8 @@ FOR_TURNS = 0.5
 FOR_STRAIGHT = 1
 STRAIGHT_THRESHOLD = 1.5
 PERIOD = FOR_STRAIGHT
+STRAIGHT_MAGNIFYING_FACTOR = 100
+ANGULAR_MAGNIFYING_FACTOR = 360/math.pi
 
 def controlled_move(robot, host, port):
 
@@ -60,10 +62,12 @@ def controlled_move(robot, host, port):
 					#sys.stdout.write("\n")
 					#sys.stdout.flush()
 					movement_command_array = movement_command.split("\n")
+					'''
 					for command in movement_command_array:
 						sys.stdout.write(command)
 						sys.stdout.write("\n")
 						sys.stdout.flush()
+					'''
 					m = re.findall('[A-Za-z]+\:\s(-?[0-9]+.[0-9]+)', movement_command)
 					
 					if len(m) < 6:
@@ -72,13 +76,18 @@ def controlled_move(robot, host, port):
 					linear = float(m[0])
 					angular = float(m[5])
 
+					# assumes that the linear and angular has been sent in m/s
+					# change to whatever roomba is using
+					linear = STRAIGHT_MAGNIFYING_FACTOR * linear
+					angular = ANGULAR_MAGNIFYING_FACTOR * angular
+
 					if linear > MAX_LINEAR_VELOCITY: linear = MAX_LINEAR_VELOCITY
 					if angular > MAX_ANGULAR_VELOCITY: angular = MAX_ANGULAR_VELOCITY
 
 					if linear < -MAX_LINEAR_VELOCITY: linear = -MAX_LINEAR_VELOCITY
 					if angular < -MAX_ANGULAR_VELOCITY: angular = -MAX_ANGULAR_VELOCITY
 
-					sys.stdout.write("regex here\n")
+					#sys.stdout.write("regex here\n")
 
 					#sys.stdout.write("previous period is " + str(PERIOD))
 
@@ -92,18 +101,19 @@ def controlled_move(robot, host, port):
 						PERIOD = FOR_TURNS
 					
 					#sys.stdout.write("I think the period is " + str(PERIOD))
-					sys.stdout.write("\n")
+					#sys.stdout.write("\n")
 
 					'''
 					for i in m:
 						sys.stdout.write(i)
 						sys.stdout.write("\n")
 					'''
-					sys.stdout.write(str(linear))
+					sys.stdout.write("LINEAR velocity is " + str(linear))
 					sys.stdout.write("\n")
-					sys.stdout.write(str(angular))
-					sys.stdout.write("\n")
+					sys.stdout.write("ANGULAR velocity is " + str(angular))
+					sys.stdout.write("\n\n\n\n")
 					sys.stdout.flush()
+
 					# grab the lock and give robot commands
 					# assumes command is of the form x:%d, y, z; r, p, y
 									
@@ -162,9 +172,9 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 			#distance = 10
 			#angle = 10
 			msg = str(distance) + ";" + str(angle)
-			print(distance)
-			print(angle)
-			print(msg)
+			#print(distance)
+			#print(angle)
+			print("\t\t\t\t\tODOMETRY msg is " + msg + "\n\n\n")
 			msg = bytes(msg, 'UTF-8')
 			print("sending create odometry to ROS node")
 			s.send(msg)

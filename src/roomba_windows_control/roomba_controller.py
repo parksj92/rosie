@@ -82,8 +82,11 @@ def controlled_move(robot, host, port):
 					linear = float(m[0])
 					angular = float(m[5])
 
+					print("linear received is: " + str(linear))
+					print("angular received is: " + str(angular))
+
 					# filter the linear command for automated control
-					linear = filter_linear(linear)
+					linear = filter_linear(linear, angular)
 
 					# assumes that the linear and angular has been sent in m/s
 					# change to whatever roomba is using
@@ -135,7 +138,7 @@ def controlled_move(robot, host, port):
 				if msg == "STOP":
 					robot.stop()
 
-def filter_linear(linear):
+def filter_linear(linear, angular):
     """
     Extrapolate the command last seen until a new command is received
     We favor non-zero commands over zero commands
@@ -146,13 +149,25 @@ def filter_linear(linear):
     global zeros_seen
     global p
 
+    filtered_linear = 0
+
+    # linear is not 0 so move at the non zero rate
     if linear != 0:
         last_linear_command_value_received = linear
         filtered_linear = last_linear_command_value_received
         zeros_seen = 0
+    # if linear is zero, increment the number of 0s seen
     if linear  == 0:
         zeros_seen += 1
-        filtered_linear = last_linear_command_value_received
+        # if there is angular movement, move accordingly
+        if angular != 0:
+            filtered_linear = linear
+        # else was garbage command
+        else:
+            filtered_linear = last_linear_command_value_received
+        
+        #filtered_linear = last_linear_command_value_received
+    # if we have seen 20 linear 0s in a row, stop
     if zeros_seen >= MAX_ZEROS:
         filtered_linear = linear
     print("zeros seen is " + str(zeros_seen))

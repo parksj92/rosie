@@ -17,8 +17,12 @@ FOR_TURNS = 0.5
 FOR_STRAIGHT = 1
 STRAIGHT_THRESHOLD = 1.5
 PERIOD = FOR_STRAIGHT
-STRAIGHT_MAGNIFYING_FACTOR = 100
+STRAIGHT_MAGNIFYING_FACTOR = 200
 ANGULAR_MAGNIFYING_FACTOR = 360/math.pi
+last_linear_command_value_received = 0
+zeros_seen = 0
+MAX_ZEROS = 20
+
 
 def controlled_move(robot, host, port):
 
@@ -58,11 +62,13 @@ def controlled_move(robot, host, port):
 					#print data
 					# handle the data here
 					movement_command = str(data)
+
+					'''
 					#sys.stdout.write(movement_command)
 					#sys.stdout.write("\n")
 					#sys.stdout.flush()
 					movement_command_array = movement_command.split("\n")
-					'''
+					
 					for command in movement_command_array:
 						sys.stdout.write(command)
 						sys.stdout.write("\n")
@@ -75,6 +81,9 @@ def controlled_move(robot, host, port):
 
 					linear = float(m[0])
 					angular = float(m[5])
+
+					# filter the linear command for automated control
+					linear = filter_linear(linear)
 
 					# assumes that the linear and angular has been sent in m/s
 					# change to whatever roomba is using
@@ -126,6 +135,29 @@ def controlled_move(robot, host, port):
 				if msg == "STOP":
 					robot.stop()
 
+def filter_linear(linear):
+    """
+    Extrapolate the command last seen until a new command is received
+    We favor non-zero commands over zero commands
+    If receive a zero command for p times in a row, then stop
+    CF: Daniel's Extrapolation Method
+    """
+    global last_linear_command_value_received
+    global zeros_seen
+    global p
+
+    if linear != 0:
+        last_linear_command_value_received = linear
+        filtered_linear = last_linear_command_value_received
+        zeros_seen = 0
+    if linear  == 0:
+        zeros_seen += 1
+        filtered_linear = last_linear_command_value_received
+    if zeros_seen >= MAX_ZEROS:
+        filtered_linear = linear
+    print("zeros seen is " + str(zeros_seen))
+    print("new filtered_linear is " + str(filtered_linear))
+    return filtered_linear
 
 
 def send_odometry(robot, odometry_server_name, odometry_server_port):
@@ -134,8 +166,8 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 
 	# period of updates
 	global PERIOD
-	MAX_STRAIGHT_ENCODER_VALUE = 200
-	MAX_ANGLE_ENCODER_VALUE = 30
+	MAX_STRAIGHT_ENCODER_VALUE = 500
+	MAX_ANGLE_ENCODER_VALUE = 100
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(5) 
@@ -174,12 +206,14 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 			msg = str(distance) + ";" + str(angle)
 			#print(distance)
 			#print(angle)
-			print("\t\t\t\t\tODOMETRY msg is " + msg + "\n\n\n")
 			msg = bytes(msg, 'UTF-8')
+			'''
 			print("sending create odometry to ROS node")
+			print("\t\t\t\t\tODOMETRY msg is " + msg + "\n\n\n")
+			print("actual period is", PERIOD)
+			'''
 			s.send(msg)
 			time.sleep(PERIOD)
-			print("actual period is", PERIOD)
 	except :
 		print("odometry publisher crashed")
 		robot.shutdown()
@@ -197,7 +231,7 @@ if __name__ == "__main__":
 	host = sys.argv[2]
 	port = sys.argv[3]
 	'''
-	command_host = "160.39.240.59"	# hostname for component that gives commands
+	command_host = "160.39.241.30"	# hostname for component that gives commands
 	command_port = 8001             # same port as used by the server
 
 #	r = "hi"
@@ -226,4 +260,3 @@ if __name__ == "__main__":
 	# wait on the threads to terminate
 	controlled_move_thread.join()
 	send_odometry_thread.join()
-

@@ -1,6 +1,7 @@
 <launch>
 
     <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_bcaster" args="0 0 0 0 0 0 1 base_link camera_link 33" />
+    <!--<node pkg="tf" type="static_transform_publisher" name="map_to_marker_bcaster" args="-3.98779678345 -2.2597990036 0.2 0 0 0 1 map marker 33" />-->
 
     <node name="movement_message_server" pkg="irobot_create" type="movement_message_server.py" />
 
@@ -10,18 +11,18 @@
     <!-- Run the laser -->
     <include file="$(find irobot_create)/launch/laser.launch" />
     <node name="rviz" pkg="rviz" type="rviz" />
-    <arg name="map_file" default="$(find map2d)/cepsr_map_4_21_final.yaml"/>
+    <arg name="map_file" default="$(find map2d)/cepsr_map_4_21_final.yaml"/> -->
 
     <!-- Run the map server -->
-    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" /> 
 
-    <!-- Run AMCL --> 
+    <!-- Run AMCL -->
     <include file="$(find amcl)/examples/amcl_diff.launch" />
 
-    <!-- Publish initial pose 
-    <node pkg="rosie_2dnav" name="initialpose_publisher" type="initialpose_publisher.py" /> -->
-   
-    <!-- Run move_base -->
-    <include file="$(find rosie_2dnav)/launch/move_base.launch" />
+    <!-- Publish initial pose -->
+    <node pkg="rosie_2dnav" name="initialpose_publisher" type="initialpose_publisher.py" />
+  
+    <!-- Run move_base 
+    <include file="$(find rosie_2dnav)/launch/move_base.launch" /> -->
 
 </launch>

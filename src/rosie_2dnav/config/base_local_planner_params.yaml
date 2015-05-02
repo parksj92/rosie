@@ -21,4 +21,7 @@ TrajectoryPlannerROS:
 
     escape_velocity: -0.1
 
-    controller_frequency: 2
+    controller_frequency: 20.0
+
+    path_distance_bias: 5.0 #20.0
+    goal_distance_bias: 0.8 #25.0

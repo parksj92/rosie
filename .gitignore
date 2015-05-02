@@ -1,1 +1,6 @@
 src/web_ui/venv
+build
+devel
+lib
+bag_files
+img

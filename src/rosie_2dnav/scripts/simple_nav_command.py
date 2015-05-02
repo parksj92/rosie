@@ -6,6 +6,8 @@
     On each round, select a new random sequence of locations, then attempt to move to each location
     in succession.  Keep track of success rate, time elapsed, and total distance traveled.      
 """
+
+import roslib;
 import rospy
 import actionlib
 from actionlib_msgs.msg import *
@@ -28,10 +30,13 @@ class NavTest():
         # Pose coordinates are then displayed in the terminal
         # that was used to launch RViz.
         locations = dict()
-        
+
+        locations['end_goal'] = Pose(Point(-9.08224582672, -2.22996115685, 0.000), Quaternion(0.000, 0.000, 0.771322932548, 0.636443975323))
+        locations['start_goal'] = Pose(Point(7.1424202919, 0.936812639236, 0.000), Quaternion(0.000, 0.000, 0.133639120033, 0.991030062913))
+        """
         locations['start_goal'] = Pose(Point(-7.72074222565, -2.93814635277, 0.000), Quaternion(0.000, 0.000, 0.771322932548, 0.636443975323))
         locations['end_goal'] = Pose(Point(7.1424202919, 0.936812639236, 0.000), Quaternion(0.000, 0.000, 0.133639120033, 0.991030062913))
-       
+        """
         rospy.loginfo("NavTest going to %s", end_goal)
 
         # Publisher to manually control the robot (e.g. to stop it)

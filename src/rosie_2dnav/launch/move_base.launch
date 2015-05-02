@@ -13,5 +13,8 @@
         <rosparam file="$(find rosie_2dnav)/config/local_costmap_params.yaml" command="load" />
         <rosparam file="$(find rosie_2dnav)/config/global_costmap_params.yaml" command="load" />
         <rosparam file="$(find rosie_2dnav)/config/base_local_planner_params.yaml" command="load" />
+        <rosparam>
+            controller_patience: 5.0
+        </rosparam>
     </node>
 </launch>

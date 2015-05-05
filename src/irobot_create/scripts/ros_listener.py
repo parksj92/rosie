@@ -35,7 +35,7 @@ def callback(data):
     confirmation = s.send(data_str) # socket sends binary string
     print confirmation
     #s.close()
-    
+   
 def listener():
     rospy.init_node("cmd_listener", anonymous=True)
     rospy.Subscriber("/cmd_vel", Twist, callback)

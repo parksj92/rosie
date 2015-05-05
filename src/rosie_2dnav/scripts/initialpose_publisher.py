@@ -22,14 +22,14 @@ def initialpose_publisher():
 
         # got these values from clicking on rviz
 
-        initialpose.pose.pose.position.x = -8.15496253967
-        initialpose.pose.pose.position.y = -2.23385715485 
+        initialpose.pose.pose.position.x = 6.83541727066
+        initialpose.pose.pose.position.y = 0.639947891235
         initialpose.pose.pose.position.z = 0
 
         initialpose.pose.pose.orientation.x = 0
         initialpose.pose.pose.orientation.y = 0
-        initialpose.pose.pose.orientation.z = 0.744827657048
-        initialpose.pose.pose.orientation.w = 0.6672568930
+        initialpose.pose.pose.orientation.z = -0.998428836684
+        initialpose.pose.pose.orientation.w = 0.0560344365342
 
         initialpose.pose.covariance = [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 
                                         0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 

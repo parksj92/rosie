@@ -1,0 +1,9 @@
+digraph G {
+"camera" -> "camera_link"[label="Broadcaster: /camera_camera_link_bcaster\nAverage rate: 30.411 Hz\nMost recent transform: 1425386915.057 \nBuffer length: 4.965 sec\n"];
+"base_link" -> "camera"[label="Broadcaster: /baselink_camera_bcaster\nAverage rate: 30.414 Hz\nMost recent transform: 1425386915.065 \nBuffer length: 4.965 sec\n"];
+"odom" -> "base_link"[label="Broadcaster: /kinect_odometer\nAverage rate: 2.812 Hz\nMost recent transform: 1425386914.270 \nBuffer length: 4.268 sec\n"];
+"camera_rgb_frame" -> "camera_rgb_optical_frame"[label="Broadcaster: /camera_base_link3\nAverage rate: 10.192 Hz\nMost recent transform: 1425386915.080 \nBuffer length: 4.906 sec\n"];
+"camera_link" -> "camera_rgb_frame"[label="Broadcaster: /camera_base_link1\nAverage rate: 10.194 Hz\nMost recent transform: 1425386915.086 \nBuffer length: 4.905 sec\n"];
+"camera_link" -> "camera_depth_frame"[label="Broadcaster: /camera_base_link\nAverage rate: 10.194 Hz\nMost recent transform: 1425386915.136 \nBuffer length: 4.905 sec\n"];
+"camera_depth_frame" -> "camera_depth_optical_frame"[label="Broadcaster: /camera_base_link2\nAverage rate: 10.194 Hz\nMost recent transform: 1425386915.136 \nBuffer length: 4.905 sec\n"];
+}

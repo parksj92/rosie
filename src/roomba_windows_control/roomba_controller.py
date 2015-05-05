@@ -1,4 +1,4 @@
-import os, sys, inspect, socket, time, select, math
+import os, sys, inspect, socket, time, select, math, traceback
 import re, math
 from threading import Thread
 
@@ -18,10 +18,11 @@ FOR_STRAIGHT = 1
 STRAIGHT_THRESHOLD = 1.5
 PERIOD = FOR_STRAIGHT
 STRAIGHT_MAGNIFYING_FACTOR = 200
-ANGULAR_MAGNIFYING_FACTOR = 360/math.pi
+ANGULAR_MAGNIFYING_FACTOR = 200 #360/math.pi
 last_linear_command_value_received = 0
 zeros_seen = 0
 MAX_ZEROS = 20
+ODOMETRY_MAGNIFICATION = 1 #0.8 # 0.7972 # 14.75/18.5
 
 
 def controlled_move(robot, host, port):
@@ -82,8 +83,10 @@ def controlled_move(robot, host, port):
 					linear = float(m[0])
 					angular = float(m[5])
 
+					
 					print("linear received is: " + str(linear))
 					print("angular received is: " + str(angular))
+					
 
 					# filter the linear command for automated control
 					linear = filter_linear(linear, angular)
@@ -120,11 +123,13 @@ def controlled_move(robot, host, port):
 						sys.stdout.write(i)
 						sys.stdout.write("\n")
 					'''
+					
 					sys.stdout.write("LINEAR velocity is " + str(linear))
 					sys.stdout.write("\n")
 					sys.stdout.write("ANGULAR velocity is " + str(angular))
-					sys.stdout.write("\n\n\n\n")
+					sys.stdout.write("\n\n\n")
 					sys.stdout.flush()
+					
 
 					# grab the lock and give robot commands
 					# assumes command is of the form x:%d, y, z; r, p, y
@@ -170,8 +175,11 @@ def filter_linear(linear, angular):
     # if we have seen 20 linear 0s in a row, stop
     if zeros_seen >= MAX_ZEROS:
         filtered_linear = linear
+    
+    '''
     print("zeros seen is " + str(zeros_seen))
     print("new filtered_linear is " + str(filtered_linear))
+    '''
     return filtered_linear
 
 
@@ -181,6 +189,7 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 
 	# period of updates
 	global PERIOD
+	global ODOMETRY_MAGNIFICATION
 	MAX_STRAIGHT_ENCODER_VALUE = 500
 	MAX_ANGLE_ENCODER_VALUE = 100
 
@@ -218,18 +227,27 @@ def send_odometry(robot, odometry_server_name, odometry_server_port):
 			
 			#distance = 10
 			#angle = 10
+
+			# scale the odometry and convert to int
+			distance = ODOMETRY_MAGNIFICATION * distance
+			distance = int(distance)
+
 			msg = str(distance) + ";" + str(angle)
 			#print(distance)
 			#print(angle)
-			msg = bytes(msg, 'UTF-8')
 			'''
 			print("sending create odometry to ROS node")
 			print("\t\t\t\t\tODOMETRY msg is " + msg + "\n\n\n")
-			print("actual period is", PERIOD)
-			'''
+			#print("actual period is", PERIOD)
+			'''			
+
+			msg = bytes(msg, 'UTF-8')
+			#print("sent message!")
 			s.send(msg)
 			time.sleep(PERIOD)
-	except :
+	except Exception as e:
+		print(e)
+		#print(traceback.format_exc())
 		print("odometry publisher crashed")
 		robot.shutdown()
 		print("done!")

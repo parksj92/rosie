@@ -9,6 +9,7 @@ from geometry_msgs.msg import Twist
 from datetime import datetime
 from math import sin,cos,pi, radians
 import csv
+import sys
 
 def main():
     # List to keep track of socket descriptors
@@ -55,9 +56,9 @@ def main():
                     #In Windows, sometimes when a TCP program closes abruptly,
                     # a "Connection reset by peer" exception will be thrown
                     data = sock.recv(RECV_BUFFER)
-                    print "received odometry data" 
                     if data:
-                        #print data
+                        print "received odometry data" 
+                        print data
                         m = re.findall('(-?[0-9]+);(-?[0-9]+)', data)
                         #print m[0]
                         if len(m) != 1:
@@ -77,6 +78,9 @@ def main():
                         publish_odometry(d, theta)
                         # rate.sleep()
                         # here should put function to do ROS publisher actions
+                    else:
+                        rospy.logwarn("Received None Data from Odometry")
+                        sys.exit("Received None Data from Odometry")
 
                 except:
                     print "Client (%s, %s) is offline" % addr
